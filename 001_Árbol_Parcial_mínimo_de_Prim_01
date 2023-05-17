@@ -1,0 +1,51 @@
+import sys
+
+def min_spanning_tree_prim(graph):
+    num_nodes = len(graph)
+    # Inicializar el árbol parcial y las distancias mínimas
+    mst = [None] * num_nodes
+    min_distances = [sys.maxsize] * num_nodes
+    selected = [False] * num_nodes
+
+    # Elegir el primer nodo como nodo inicial
+    mst[0] = -1
+    min_distances[0] = 0
+
+    for _ in range(num_nodes - 1):
+        # Encontrar el nodo con la distancia mínima del conjunto de nodos no incluidos
+        min_dist = sys.maxsize
+        min_index = -1
+        for i in range(num_nodes):
+            if not selected[i] and min_distances[i] < min_dist:
+                min_dist = min_distances[i]
+                min_index = i
+
+        selected[min_index] = True
+
+        # Actualizar las distancias mínimas de los nodos adyacentes al nodo seleccionado
+        for v in range(num_nodes):
+            if (
+                graph[min_index][v] > 0
+                and not selected[v]
+                and graph[min_index][v] < min_distances[v]
+            ):
+                mst[v] = min_index
+                min_distances[v] = graph[min_index][v]
+
+    return mst
+
+
+# Ejemplo de uso del algoritmo de Prim
+graph = [
+    [0, 2, 0, 6, 0],
+    [2, 0, 3, 8, 5],
+    [0, 3, 0, 0, 7],
+    [6, 8, 0, 0, 9],
+    [0, 5, 7, 9, 0],
+]
+
+mst = min_spanning_tree_prim(graph)
+
+print("Árbol Parcial Mínimo:")
+for i in range(1, len(mst)):
+    print(f"Arista: {mst[i]} - {i}, Peso: {graph[i][mst[i]]}")
